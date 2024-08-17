@@ -14,5 +14,5 @@ Gem::Specification.new do |s|
   s.license = "MIT"
   s.metadata = { "rubygems_mfa_required" => "true" }
   s.add_dependency "csv"
-  s.add_dependency "activesupport"
+  s.add_dependency "dorian-to_struct"
 end
