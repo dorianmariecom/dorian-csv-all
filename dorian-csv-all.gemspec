@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = "dorian-csv-all"
-  s.version = "0.1.1"
+  s.version = File.read("VERSION").strip
   s.summary = "evaluates some ruby code on all lines of the csv input"
   s.description = s.summary
   s.authors = ["Dorian Marié"]
