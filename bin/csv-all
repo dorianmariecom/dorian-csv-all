@@ -2,13 +2,33 @@
 # frozen_string_literal: true
 
 require "csv"
-require "dorian-to_struct"
+require "dorian/to_struct"
+require "dorian/arguments"
 
-HEADERS = ARGV.detect { |argv| argv == "-h" || argv == "--headers" }
+parsed =
+  Dorian::Arguments.parse(
+    headers: :boolean,
+    version: {
+      alias: :v
+    },
+    help: {
+      alias: :h
+    }
+  )
 
-it =
-  CSV
-    .parse($stdin.each_line.to_a.map(&:strip).join("\n"), headers: !!HEADERS)
-    .map { |line| HEADERS ? line.to_h.to_struct : line.to_a }
+abort parsed.help if parsed.options.help
 
-eval((ARGV - [HEADERS]).join(" "))
+if parsed.options.version
+  abort File.read(File.expand_path("../../VERSION", __FILE__))
+end
+
+inputs = parsed.files.map { |file| File.read(file) }
+inputs = [$stdin.each_line.to_a.map(&:strip).join("\n")] if inputs.empty?
+headers = parsed.options.headers
+
+inputs.each do |input|
+  it = CSV.parse(input, headers:)
+  it = it.map { |line| headers ? line.to_h.to_struct : line.to_a }
+
+  eval(parsed.arguments.join(" "))
+end
