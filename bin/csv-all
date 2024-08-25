@@ -19,7 +19,7 @@ parsed =
 abort parsed.help if parsed.options.help
 
 if parsed.options.version
-  abort File.read(File.expand_path("../../VERSION", __FILE__))
+  abort File.read(File.expand_path("../VERSION", __dir__))
 end
 
 inputs = parsed.files.map { |file| File.read(file) }
@@ -28,7 +28,7 @@ headers = parsed.options.headers
 
 inputs.each do |input|
   it = CSV.parse(input, headers:)
-  it = it.map { |line| headers ? line.to_h.to_struct : line.to_a }
+  it.map { |line| headers ? line.to_h.to_struct : line.to_a }
 
   eval(parsed.arguments.join(" "))
 end
